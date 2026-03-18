@@ -121,7 +121,8 @@
                        bubbleShimmer 8s ease infinite 0.5s;
             opacity: 1;
             z-index: 100;
-            border-left: 4px solid #b39ddb; /* 配套的紫色边框 */
+            /* 修改1: 添加整个边框，3px宽度，动画将在JS中动态设置 */
+            border: 3px solid #e6d7ff; /* 默认颜色，会被JS覆盖 */
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%236a4a8c33"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>');
             background-repeat: no-repeat;
             background-position: top right 10px;
@@ -164,6 +165,26 @@
             100% { 
                 background-position: 0% 50%; 
                 box-shadow: 0 6px 16px rgba(150, 150, 200, 0.2);
+            }
+        }
+
+        /* 新增：整个边框的流动特效动画 */
+        @keyframes borderFlow {
+            0%, 100% { 
+                border-color: #e6d7ff; /* 淡紫 */
+                box-shadow: 0 0 8px #e6d7ff;
+            }
+            25% { 
+                border-color: #d4f0ff; /* 淡蓝 */
+                box-shadow: 0 0 12px #d4f0ff;
+            }
+            50% { 
+                border-color: #ffe6f0; /* 淡粉 */
+                box-shadow: 0 0 8px #ffe6f0;
+            }
+            75% { 
+                border-color: #e6ffe6; /* 淡绿 */
+                box-shadow: 0 0 12px #e6ffe6;
             }
         }
 
@@ -298,7 +319,7 @@
 
         // ---------- 粒子系统变量 ----------
         let particles = [];
-        const PARTICLE_COUNT = 12000;        // 增加粒子数量，让文字更饱满
+        const PARTICLE_COUNT = 8000;        // 粒子数量
         const RGB_COLOR = "255, 182, 193";    // 浅粉色
         let animationFrameId = null;
         let breathPhase = 0;
@@ -427,7 +448,7 @@
                 particle.style.top = `${bubbleY}px`;
                 
                 // 随机延迟
-                particle.style.animationDelay = `${Math.random() * 0.9}s`;
+                particle.style.animationDelay = `${Math.random() * 0.5}s`;
                 
                 document.body.appendChild(particle);
                 
@@ -460,14 +481,13 @@
             let bubbleCount = 0;
 
             for (let i = 0; i < birthdayWishes.length; i++) {
-                // 修改①：气泡生成速度放缓0.3s (原400~700ms → 700~1000ms)
-                const delay = Math.random() * 300 + 700; // 700~1000ms
+                const delay = Math.random() * 300 + 400; // 400~700ms
                 totalDelay += delay;
 
                 setTimeout(() => {
                     // 让之前的气泡变淡一些，突出最新
                     document.querySelectorAll('.birthday-bubble').forEach(b => {
-                        b.style.opacity = '0.2';
+                        b.style.opacity = '0.4';
                         b.style.zIndex = zIndex - 1;
                     });
 
@@ -506,10 +526,31 @@
                     bubble.style.left = x + 'px';
                     bubble.style.top = y + 'px';
                     positions.push({ x, y });
+
+                    // ========== 关键修改：为每个气泡设置随机马卡龙色边框 ==========
+                    // 定义一组马卡龙浅色系
+                    const macaronColors = [
+                        '#e6d7ff', // 淡紫
+                        '#d4f0ff', // 淡蓝
+                        '#ffe6f0', // 淡粉
+                        '#e6ffe6', // 淡绿
+                        '#ffd7e6', // 浅玫瑰粉
+                        '#d7e6ff', // 淡天蓝
+                        '#e6ffd7', // 淡青
+                        '#f0d4ff', // 淡薰衣草紫
+                    ];
+                    // 随机选择一个颜色
+                    const randomBorderColor = macaronColors[Math.floor(Math.random() * macaronColors.length)];
+                    // 将该颜色设置为气泡的边框颜色
+                    bubble.style.borderColor = randomBorderColor;
+                    // 为边框添加流动特效
+                    bubble.style.animation += ', borderFlow 4s ease-in-out infinite 2s';
+                    // ========== 关键修改结束 ==========
+
                     container.appendChild(bubble);
                     bubbleCount++;
 
-                    // 修改②：气泡破裂延缓0.1s (原3000ms → 3100ms)
+                    // 3秒后触发破裂消失动画
                     setTimeout(() => {
                         createBubbleBurstAnimation(bubble);
                         bubbleCount--;
@@ -521,7 +562,7 @@
                                 initParticles();  // 开始粒子聚合
                             }, 1000);
                         }
-                    }, 3100);  // 延缓0.1s
+                    }, 3000);
 
                     // 最后一条气泡出现后，如果没有气泡了，等待一段时间切换到粒子效果
                     if (i === birthdayWishes.length - 1) {
@@ -530,7 +571,7 @@
                                 particleContainer.style.display = 'block';
                                 initParticles();
                             }
-                        }, 5000); // 最长等待5秒 (仍足够)
+                        }, 5000); // 最长等待5秒
                     }
                 }, totalDelay);
             }
@@ -553,57 +594,59 @@
             const centerX = w / 2;
             const centerY = h / 2;
 
-            // ========== 核心优化：重新分配两行文字的垂直空间 ==========
-            // 安全边距（上下留白）
-            const safeMargin = Math.min(50, h * 0.1);
-            // 可用高度 = 总高度 - 上下安全边距
-            const availableHeight = h - 2 * safeMargin;
-            // 第一行（肖珍妮）占可用高度的 55%，第二行（Happy Birthday）占 45%
-            const row1Height = availableHeight * 0.55;
-            const row2Height = availableHeight * 0.45;
+            // 调整字体大小和位置，确保在手机屏幕上完整显示
+            const safeMargin = Math.min(40, h * 0.08);
+            const maxTopHeight = h * 0.4;
+            const maxBottomHeight = h * 0.6;
 
-            // 计算第一行字体大小（肖珍妮）：基于宽度和行高，取最小值
-            let fontSize1 = Math.min(
-                w * 0.15,        // 基于宽度
-                row1Height * 0.8 // 基于行高
-            );
-            // 计算第二行字体大小（Happy Birthday）：基于宽度和行高，取最小值
-            let fontSize2 = Math.min(
-                w * 0.1,         // 基于宽度
-                row2Height * 0.8 // 基于行高
-            );
+            let topFontSize = Math.min(100, w * 0.12, h * 0.14);
+            let bottomFontSize = Math.min(70, w * 0.09, h * 0.1);
 
-            // 计算两行文字的垂直位置
-            // 第一行底部 = 安全边距 + row1Height
-            const text1Y = safeMargin + row1Height - fontSize1 * 0.5;
-            // 第二行顶部 = 安全边距 + row1Height
-            const text2Y = safeMargin + row1Height + fontSize2 * 0.5;
+            // 计算文字位置
+            let topY = centerY - topFontSize * 0.6;
+            let bottomY = centerY + bottomFontSize * 0.9;
+
+            // 边界检查
+            if (topY - topFontSize/2 < safeMargin) {
+                topY = safeMargin + topFontSize/2;
+            }
+            if (bottomY + bottomFontSize/2 > h - safeMargin) {
+                bottomY = h - safeMargin - bottomFontSize/2;
+            }
+            
+            // 如果空间不足，等比例缩小字体
+            if (bottomY + bottomFontSize/2 > h - safeMargin) {
+                const scaleFactor = (h - safeMargin*2) / (bottomY + bottomFontSize/2 - topY + topFontSize/2);
+                topFontSize *= scaleFactor * 0.9;
+                bottomFontSize *= scaleFactor * 0.9;
+                topY = centerY - topFontSize * 0.6;
+                bottomY = centerY + bottomFontSize * 0.9;
+            }
 
             // 离屏 canvas 绘制文字
             const offCanvas = document.createElement('canvas');
             offCanvas.width = w;
             offCanvas.height = h;
             const offCtx = offCanvas.getContext('2d');
-            offCtx.textBaseline = 'middle'; // 基于中线对齐，更精准
+            offCtx.textBaseline = 'middle';
             offCtx.textAlign = 'center';
             offCtx.fillStyle = '#000';
 
             // 绘制第一行: 肖珍妮
-            offCtx.font = `bold ${fontSize1}px "Microsoft YaHei"`;
-            offCtx.fillText('肖珍妮', centerX, text1Y);
+            offCtx.font = `bold ${topFontSize}px "Microsoft YaHei"`;
+            offCtx.fillText('肖珍妮', centerX, topY);
 
             // 绘制第二行: Happy Birthday
-            offCtx.font = `bold ${fontSize2}px "Arial", "Microsoft YaHei"`;
-            offCtx.fillText('Happy Birthday', centerX, text2Y);
+            offCtx.font = `bold ${bottomFontSize}px "Arial", "Microsoft YaHei"`;
+            offCtx.fillText('Happy Birthday', centerX, bottomY);
 
-            // 提取文字像素（步长调小，采样更密，文字更清晰）
+            // 提取文字像素
             const imageData = offCtx.getImageData(0, 0, w, h);
             const data = imageData.data;
             const textPoints = [];
 
-            // 步长从1.5 → 1.2，采样更密集，文字边缘更清晰
-            for (let y = 0; y < h; y += 1.2) {
-                for (let x = 0; x < w; x += 1.2) {
+            for (let y = 0; y < h; y += 1.8) {
+                for (let x = 0; x < w; x += 1.8) {
                     const alpha = data[(Math.floor(y) * w + Math.floor(x)) * 4 + 3];
                     if (alpha > 10) {
                         textPoints.push({ x, y });
@@ -611,25 +654,23 @@
                 }
             }
 
-            // 兜底：防止没有采样到像素
             if (textPoints.length === 0) {
-                textPoints.push({ x: centerX, y: text1Y });
-                textPoints.push({ x: centerX, y: text2Y });
+                textPoints.push({ x: centerX, y: topY });
+                textPoints.push({ x: centerX, y: bottomY });
             }
 
-            // 生成粒子 (数量提升至12000, 尺寸微调更适配)
+            // 生成粒子
             particles = [];
             for (let i = 0; i < PARTICLE_COUNT; i++) {
                 const target = textPoints[i % textPoints.length];
                 particles.push({
                     x: Math.random() * w,
                     y: Math.random() * h,
-                    // 粒子尺寸微调：1.8~3.2，兼顾清晰度和细腻度
-                    size: 1.8 + Math.random() * 1.4,
+                    size: 2.2 + Math.random() * 2.5,
                     targetX: target.x,
                     targetY: target.y,
                     phase: Math.random() * Math.PI * 2,
-                    speed: 0.15 + Math.random() * 0.05, // 加快粒子聚合速度
+                    speed: 0.12 + Math.random() * 0.08,
                     trailLength: 0,
                     trailPoints: []
                 });
