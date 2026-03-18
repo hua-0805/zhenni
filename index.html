@@ -2,10 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>肖珍妮 生日快乐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>肖珍妮 · 生日快乐</title>
     <style>
-        /* 全局重置 */
         * {
             margin: 0;
             padding: 0;
@@ -19,18 +18,29 @@
             background-color: #fef7ff;
         }
 
-        /* 1. 密码弹窗样式（第一个画面） */
+        /* 密码弹窗 */
         #passwordModal {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #ffcee5, #ffb6c1);
+            background: linear-gradient(135deg, #ffcee5, #ffb6c1, #d4f0ff, #c8f7c5);
+            background-size: 300% 300%;
             padding: 40px 30px;
             border-radius: 20px;
             box-shadow: 0 8px 24px rgba(255, 105, 180, 0.3);
             text-align: center;
             z-index: 1000;
+            width: 280px;
+            max-width: 80%;
+            animation: shimmer 6s ease infinite;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         #passwordModal .name-title {
@@ -38,11 +48,11 @@
             color: #d63384;
             margin-bottom: 20px;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         #passwordModal .password-input {
-            width: 200px;
+            width: 100%;
             height: 40px;
             padding: 0 15px;
             border: 2px solid #ff69b4;
@@ -51,6 +61,7 @@
             margin-bottom: 20px;
             outline: none;
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
         }
 
         #passwordModal .btn-group {
@@ -68,55 +79,169 @@
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
+            flex: 0 1 auto;
         }
 
         #passwordModal .btn:hover {
             background-color: #d63384;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(214, 51, 132, 0.3);
         }
 
-        /* 2. 气泡祝福容器（第二个画面） */
+        /* 气泡容器（弹幕） */
         #bubblesContainer {
             display: none;
             position: relative;
             width: 100%;
             height: 100vh;
             background-color: #fef7ff;
-            padding: 20px;
+            padding: 40px;
             overflow: hidden;
         }
 
-        /* HelloKitty风格渐变聊天气泡 */
         .birthday-bubble {
             position: absolute;
-            background: linear-gradient(120deg, #fff0f5, #ffd1dc);
+            /* 新的马卡龙渐变色系：淡紫色、淡蓝色、淡粉色、淡绿色 */
+            background: linear-gradient(135deg, 
+                #e6d7ff, /* 淡紫色 */
+                #d4f0ff, /* 淡蓝色 */
+                #ffe6f0, /* 淡粉色 */
+                #e6ffe6  /* 淡绿色 */
+            );
+            background-size: 300% 300%;
             border-radius: 18px;
-            padding: 15px 20px;
-            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
-            color: #d63384;
-            font-size: 14px;
-            font-weight: 500;
-            animation: popIn 0.5s ease forwards;
-            opacity: 0;
-            transform: scale(0.8);
+            padding: 18px 22px;
+            box-shadow: 0 6px 16px rgba(150, 150, 200, 0.2);
+            /* 配套的字体颜色：较深的紫色，确保在浅色背景上可读 */
+            color: #6a4a8c; /* 与马卡龙色系搭配的深紫色 */
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            animation: popIn 0.5s ease forwards, 
+                       bubbleShimmer 8s ease infinite 0.5s;
+            opacity: 1;
             z-index: 100;
-            /* HelloKitty小装饰 */
-            border-left: 4px solid #ff69b4;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff69b433"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>');
+            border-left: 4px solid #b39ddb; /* 配套的紫色边框 */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%236a4a8c33"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>');
             background-repeat: no-repeat;
-            background-position: top right 8px;
-            background-size: 20px;
+            background-position: top right 10px;
+            background-size: 22px;
+            transition: opacity 3s ease, z-index 0.3s ease, transform 0.3s ease;
         }
 
-        /* 气泡弹出动画 */
+        .birthday-bubble:hover {
+            transform: scale(1.05);
+        }
+
         @keyframes popIn {
-            to {
-                opacity: 1;
-                transform: scale(1);
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8) rotate(-5deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg); 
             }
         }
 
-        /* 3. 粒子文字容器（第三个画面） */
+        @keyframes bubbleShimmer {
+            0% { 
+                background-position: 0% 50%; 
+                box-shadow: 0 6px 16px rgba(150, 150, 200, 0.2);
+            }
+            25% { 
+                background-position: 50% 100%; 
+                box-shadow: 0 8px 20px rgba(180, 150, 220, 0.3);
+            }
+            50% { 
+                background-position: 100% 50%; 
+                box-shadow: 0 6px 18px rgba(150, 200, 180, 0.25);
+            }
+            75% { 
+                background-position: 50% 0%; 
+                box-shadow: 0 8px 20px rgba(200, 180, 150, 0.3);
+            }
+            100% { 
+                background-position: 0% 50%; 
+                box-shadow: 0 6px 16px rgba(150, 150, 200, 0.2);
+            }
+        }
+
+        /* 新增：气泡破裂消失动画 */
+        @keyframes bubbleBurst {
+            0% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg); 
+                filter: blur(0px);
+            }
+            20% { 
+                opacity: 0.8; 
+                transform: scale(1.1) rotate(5deg); 
+                filter: blur(1px);
+            }
+            40% { 
+                opacity: 0.6; 
+                transform: scale(1.2) rotate(-5deg); 
+                filter: blur(2px);
+            }
+            60% { 
+                opacity: 0.4; 
+                transform: scale(0.9) rotate(8deg); 
+                filter: blur(3px);
+            }
+            80% { 
+                opacity: 0.2; 
+                transform: scale(0.7) rotate(-8deg); 
+                filter: blur(4px);
+                border-radius: 12px; /* 开始变形 */
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0) rotate(0deg); 
+                filter: blur(5px);
+                border-radius: 0; /* 完全变形消失 */
+            }
+        }
+
+        /* 新增：破裂碎片效果 */
+        .bubble-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: particleFly 1.2s ease-out forwards;
+        }
+
+        @keyframes particleFly {
+            0% { 
+                opacity: 0.8; 
+                transform: translate(0, 0) scale(1);
+            }
+            20% { 
+                opacity: 0.7; 
+                transform: translate(var(--tx1), var(--ty1)) scale(0.9);
+            }
+            40% { 
+                opacity: 0.6; 
+                transform: translate(var(--tx2), var(--ty2)) scale(0.8);
+            }
+            60% { 
+                opacity: 0.4; 
+                transform: translate(var(--tx3), var(--ty3)) scale(0.6);
+            }
+            80% { 
+                opacity: 0.2; 
+                transform: translate(var(--tx4), var(--ty4)) scale(0.4);
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(var(--tx5), var(--ty5)) scale(0);
+            }
+        }
+
+        /* 粒子画布 */
         #particleContainer {
             display: none;
             position: fixed;
@@ -131,30 +256,30 @@
         canvas {
             width: 100%;
             height: 100%;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- 第一个画面：密码弹窗 -->
-    <div id="passwordModal">
-        <div class="name-title">肖珍妮</div>
-        <input type="password" class="password-input" id="passwordInput" placeholder="请输入密码">
-        <div class="btn-group">
-            <button class="btn" id="confirmBtn">确定</button>
-            <button class="btn" id="cancelBtn">取消</button>
-        </div>
+
+<div id="passwordModal">
+    <div class="name-title">肖珍妮</div>
+    <input type="password" class="password-input" id="passwordInput" placeholder="输入密码">
+    <div class="btn-group">
+        <button class="btn" id="confirmBtn">确定</button>
+        <button class="btn" id="cancelBtn">取消</button>
     </div>
+</div>
 
-    <!-- 第二个画面：HelloKitty气泡祝福 -->
-    <div id="bubblesContainer"></div>
+<div id="bubblesContainer"></div>
 
-    <!-- 第三个画面：粒子聚焦文字 -->
-    <div id="particleContainer">
-        <canvas id="particleCanvas"></canvas>
-    </div>
+<div id="particleContainer">
+    <canvas id="particleCanvas"></canvas>
+</div>
 
-    <script>
-        // ========== 元素获取 ==========
+<script>
+    (function() {
+        // ---------- 获取 DOM 元素 ----------
         const passwordModal = document.getElementById('passwordModal');
         const bubblesContainer = document.getElementById('bubblesContainer');
         const particleContainer = document.getElementById('particleContainer');
@@ -164,37 +289,53 @@
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 适配屏幕的canvas尺寸
+        // ---------- 画布尺寸自适应 ----------
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
         resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
 
-        // ========== 密码验证逻辑 ==========
-        const correctPassword = '0201'; // 生日密码0201
-        confirmBtn.addEventListener('click', () => {
-            const inputPwd = passwordInput.value.trim();
-            if (inputPwd === correctPassword) {
-                passwordModal.style.display = 'none';
-                bubblesContainer.style.display = 'block';
-                generateBubbles(); // 生成气泡祝福
-            } else {
-                alert('密码错误，请重新输入！');
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
-        });
+        // ---------- 粒子系统变量 ----------
+        let particles = [];
+        const PARTICLE_COUNT = 8000;        // 粒子数量
+        const RGB_COLOR = "255, 182, 193";    // 浅粉色
+        let animationFrameId = null;
+        let breathPhase = 0;
+        let trailPhase = 0; // 用于拖尾动画
 
-        // 取消按钮也跳转（若需修改取消行为，可调整此处）
-        cancelBtn.addEventListener('click', () => {
+        // ---------- 密码验证 / 进入 ----------
+        const correctPassword = '0201';
+
+        function startBirthdayExperience() {
             passwordModal.style.display = 'none';
             bubblesContainer.style.display = 'block';
             generateBubbles();
+        }
+
+        confirmBtn.addEventListener('click', () => {
+            if (passwordInput.value.trim() === correctPassword) {
+                startBirthdayExperience();
+            } else {
+                alert('密码错误，请再试一次');
+                passwordInput.value = '';
+            }
         });
 
-        // ========== 30组生日祝福文案 ==========
+        // 修改：取消按钮只关闭弹窗，不进入任何后续（退出代码）
+        cancelBtn.addEventListener('click', () => {
+            passwordModal.style.display = 'none';
+            // 不显示气泡和粒子，页面保持空白背景
+        });
+
+        // 回车支持
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmBtn.click();
+            }
+        });
+
+        // ---------- 气泡祝福 (30条弹幕) ----------
         const birthdayWishes = [
             "肖珍妮，生日快乐🎂！天天都有小美好～",
             "珍妮宝贝，0201生日快乐✨！永远可爱～",
@@ -228,146 +369,337 @@
             "珍妮宝贝，生日快乐🥰！生日快乐我的宝～"
         ];
 
-        // ========== 生成30个气泡（逐个弹出，不遮挡） ==========
-        function generateBubbles() {
-            const containerWidth = bubblesContainer.offsetWidth;
-            const containerHeight = bubblesContainer.offsetHeight;
-            const bubbleCount = 30;
-            const bubblePositions = []; // 记录已有气泡位置，避免重叠
-
-            for (let i = 0; i < bubbleCount; i++) {
+        // 新增：创建气泡破裂效果
+        function createBubbleBurstAnimation(bubble) {
+            const rect = bubble.getBoundingClientRect();
+            const bubbleX = rect.left + rect.width / 2;
+            const bubbleY = rect.top + rect.height / 2;
+            const bubbleColor = getComputedStyle(bubble).backgroundColor;
+            
+            // 创建20个碎片粒子
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'bubble-particle';
+                particle.style.backgroundColor = bubbleColor;
+                
+                // 随机生成碎片飞行路径
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 30 + Math.random() * 70;
+                
+                // 计算多个控制点，形成弧形路径
+                const tx1 = Math.cos(angle) * distance * 0.2;
+                const ty1 = Math.sin(angle) * distance * 0.2;
+                const tx2 = Math.cos(angle + 0.3) * distance * 0.4;
+                const ty2 = Math.sin(angle + 0.3) * distance * 0.4;
+                const tx3 = Math.cos(angle + 0.6) * distance * 0.6;
+                const ty3 = Math.sin(angle + 0.6) * distance * 0.6;
+                const tx4 = Math.cos(angle + 0.8) * distance * 0.8;
+                const ty4 = Math.sin(angle + 0.8) * distance * 0.8;
+                const tx5 = Math.cos(angle + 1) * distance;
+                const ty5 = Math.sin(angle + 1) * distance;
+                
+                // 设置CSS自定义属性
+                particle.style.setProperty('--tx1', `${tx1}px`);
+                particle.style.setProperty('--ty1', `${ty1}px`);
+                particle.style.setProperty('--tx2', `${tx2}px`);
+                particle.style.setProperty('--ty2', `${ty2}px`);
+                particle.style.setProperty('--tx3', `${tx3}px`);
+                particle.style.setProperty('--ty3', `${ty3}px`);
+                particle.style.setProperty('--tx4', `${tx4}px`);
+                particle.style.setProperty('--ty4', `${ty4}px`);
+                particle.style.setProperty('--tx5', `${tx5}px`);
+                particle.style.setProperty('--ty5', `${ty5}px`);
+                
+                // 随机大小
+                const size = 3 + Math.random() * 6;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机颜色（从马卡龙色系中选）
+                const colors = [
+                    '#e6d7ff', '#d4f0ff', '#ffe6f0', '#e6ffe6',
+                    '#ffd7e6', '#d7e6ff', '#e6ffd7', '#ffd7d7'
+                ];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 设置位置
+                particle.style.left = `${bubbleX}px`;
+                particle.style.top = `${bubbleY}px`;
+                
+                // 随机延迟
+                particle.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                document.body.appendChild(particle);
+                
+                // 动画结束后移除碎片
                 setTimeout(() => {
-                    // 创建气泡元素
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 1200);
+            }
+            
+            // 应用破裂动画
+            bubble.style.animation = 'bubbleBurst 1.2s ease forwards';
+            
+            // 动画结束后移除气泡
+            setTimeout(() => {
+                if (bubble.parentNode) {
+                    bubble.parentNode.removeChild(bubble);
+                }
+            }, 1200);
+        }
+
+        function generateBubbles() {
+            const container = bubblesContainer;
+            const w = container.offsetWidth;
+            const h = container.offsetHeight;
+            const positions = [];
+            let zIndex = 100;
+            let totalDelay = 0;
+            let bubbleCount = 0;
+
+            for (let i = 0; i < birthdayWishes.length; i++) {
+                const delay = Math.random() * 300 + 400; // 400~700ms
+                totalDelay += delay;
+
+                setTimeout(() => {
+                    // 让之前的气泡变淡一些，突出最新
+                    document.querySelectorAll('.birthday-bubble').forEach(b => {
+                        b.style.opacity = '0.4';
+                        b.style.zIndex = zIndex - 1;
+                    });
+
                     const bubble = document.createElement('div');
                     bubble.className = 'birthday-bubble';
                     bubble.textContent = birthdayWishes[i];
+                    zIndex++;
+                    bubble.style.zIndex = zIndex;
+                    
+                    // 随机轻微旋转
+                    const rotation = -3 + Math.random() * 6;
+                    bubble.style.transform = `rotate(${rotation}deg)`;
 
-                    // 随机气泡尺寸（可爱风小尺寸）
-                    const bubbleWidth = Math.floor(Math.random() * 100) + 150;
-                    const bubbleHeight = Math.floor(Math.random() * 40) + 60;
-                    bubble.style.width = `${bubbleWidth}px`;
-                    bubble.style.minHeight = `${bubbleHeight}px`;
+                    // 随机尺寸
+                    const bw = 180 + Math.floor(Math.random() * 80);
+                    const bh = 70 + Math.floor(Math.random() * 30);
+                    bubble.style.width = bw + 'px';
+                    bubble.style.minHeight = bh + 'px';
 
-                    // 随机位置（避免超出屏幕+和已有气泡保持间距）
-                    let x, y;
-                    let isValidPosition = false;
-                    let attempts = 0;
-
-                    while (!isValidPosition && attempts < 20) {
-                        x = Math.floor(Math.random() * (containerWidth - bubbleWidth - 40)) + 20;
-                        y = Math.floor(Math.random() * (containerHeight - bubbleHeight - 40)) + 20;
-                        isValidPosition = true;
-
-                        // 检查间距（最小100px）
-                        for (const pos of bubblePositions) {
-                            const dx = x - pos.x;
-                            const dy = y - pos.y;
-                            const distance = Math.sqrt(dx * dx + dy * dy);
-                            if (distance < 100) {
-                                isValidPosition = false;
+                    // 避免重叠 (简单尝试)
+                    let x, y, ok = false, tries = 0;
+                    while (!ok && tries < 50) {
+                        x = 40 + Math.random() * (w - bw - 80);
+                        y = 40 + Math.random() * (h - bh - 80);
+                        ok = true;
+                        for (const p of positions) {
+                            const dx = x - p.x;
+                            const dy = y - p.y;
+                            if (Math.hypot(dx, dy) < 200) {
+                                ok = false;
                                 break;
                             }
                         }
-                        attempts++;
+                        tries++;
                     }
+                    bubble.style.left = x + 'px';
+                    bubble.style.top = y + 'px';
+                    positions.push({ x, y });
+                    container.appendChild(bubble);
+                    bubbleCount++;
 
-                    // 设置位置并记录
-                    bubble.style.left = `${x}px`;
-                    bubble.style.top = `${y}px`;
-                    bubblePositions.push({ x, y, width: bubbleWidth, height: bubbleHeight });
+                    // 3秒后触发破裂消失动画
+                    setTimeout(() => {
+                        createBubbleBurstAnimation(bubble);
+                        bubbleCount--;
+                        
+                        // 所有气泡消失后，等待1秒切换到粒子效果
+                        if (bubbleCount === 0 && i === birthdayWishes.length - 1) {
+                            setTimeout(() => {
+                                particleContainer.style.display = 'block';
+                                initParticles();  // 开始粒子聚合
+                            }, 1000);
+                        }
+                    }, 3000);
 
-                    // 添加到容器
-                    bubblesContainer.appendChild(bubble);
-
-                    // 30个气泡生成完毕后，2秒跳转到粒子画面
-                    if (i === bubbleCount - 1) {
+                    // 最后一条气泡出现后，如果没有气泡了，等待一段时间切换到粒子效果
+                    if (i === birthdayWishes.length - 1) {
                         setTimeout(() => {
-                            bubblesContainer.style.display = 'none';
-                            particleContainer.style.display = 'block';
-                            initParticles(); // 初始化粒子效果
-                        }, 2000);
+                            if (bubbleCount === 0) {
+                                particleContainer.style.display = 'block';
+                                initParticles();
+                            }
+                        }, 5000); // 最长等待5秒
                     }
-                }, i * 300); // 每隔300ms生成一个气泡
+                }, totalDelay);
             }
         }
 
-        // ========== 粒子聚焦文字效果 ==========
-        let particles = [];
-        const particleCount = 2000; // 粒子数量（越多效果越密）
-        const text1 = "肖珍妮"; // 上行文字
-        const text2 = "happybirthday"; // 下行文字
-
-        // 初始化粒子
+        // ---------- 粒子系统：聚合显示 "肖珍妮 Happy Birthday" ----------
         function initParticles() {
-            particles = [];
-            // 文字居中位置计算
-            const text1Font = `80px Microsoft YaHei`;
-            const text2Font = `60px Microsoft YaHei`;
-            ctx.font = text1Font;
-            const text1X = (canvas.width - ctx.measureText(text1).width) / 2;
-            const text1Y = canvas.height / 2 - 50;
-            ctx.font = text2Font;
-            const text2X = (canvas.width - ctx.measureText(text2).width) / 2;
-            const text2Y = canvas.height / 2 + 50;
+            // 停止旧动画
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
 
-            // 创建离屏canvas获取文字像素点
-            const offscreenCanvas = document.createElement('canvas');
-            const offscreenCtx = offscreenCanvas.getContext('2d');
-            offscreenCanvas.width = canvas.width;
-            offscreenCanvas.height = canvas.height;
-            offscreenCtx.font = text1Font;
-            offscreenCtx.fillText(text1, text1X, text1Y);
-            offscreenCtx.font = text2Font;
-            offscreenCtx.fillText(text2, text2X, text2Y);
-            const imageData = offscreenCtx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const w = canvas.width;
+            const h = canvas.height;
+            if (w === 0 || h === 0) return;
 
-            // 收集文字像素点
-            const textPixels = [];
-            for (let y = 0; y < canvas.height; y += 2) {
-                for (let x = 0; x < canvas.width; x += 2) {
-                    const index = (y * canvas.width + x) * 4;
-                    if (imageData[index + 3] > 0) { // 仅收集有文字的像素
-                        textPixels.push({ x, y });
+            ctx.clearRect(0, 0, w, h);
+
+            const centerX = w / 2;
+            const centerY = h / 2;
+
+            // 调整字体大小和位置，确保在手机屏幕上完整显示
+            const safeMargin = Math.min(40, h * 0.08);
+            const maxTopHeight = h * 0.4;
+            const maxBottomHeight = h * 0.6;
+
+            let topFontSize = Math.min(100, w * 0.12, h * 0.14);
+            let bottomFontSize = Math.min(70, w * 0.09, h * 0.1);
+
+            // 计算文字位置
+            let topY = centerY - topFontSize * 0.6;
+            let bottomY = centerY + bottomFontSize * 0.9;
+
+            // 边界检查
+            if (topY - topFontSize/2 < safeMargin) {
+                topY = safeMargin + topFontSize/2;
+            }
+            if (bottomY + bottomFontSize/2 > h - safeMargin) {
+                bottomY = h - safeMargin - bottomFontSize/2;
+            }
+            
+            // 如果空间不足，等比例缩小字体
+            if (bottomY + bottomFontSize/2 > h - safeMargin) {
+                const scaleFactor = (h - safeMargin*2) / (bottomY + bottomFontSize/2 - topY + topFontSize/2);
+                topFontSize *= scaleFactor * 0.9;
+                bottomFontSize *= scaleFactor * 0.9;
+                topY = centerY - topFontSize * 0.6;
+                bottomY = centerY + bottomFontSize * 0.9;
+            }
+
+            // 离屏 canvas 绘制文字
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = w;
+            offCanvas.height = h;
+            const offCtx = offCanvas.getContext('2d');
+            offCtx.textBaseline = 'middle';
+            offCtx.textAlign = 'center';
+            offCtx.fillStyle = '#000';
+
+            // 绘制第一行: 肖珍妮
+            offCtx.font = `bold ${topFontSize}px "Microsoft YaHei"`;
+            offCtx.fillText('肖珍妮', centerX, topY);
+
+            // 绘制第二行: Happy Birthday
+            offCtx.font = `bold ${bottomFontSize}px "Arial", "Microsoft YaHei"`;
+            offCtx.fillText('Happy Birthday', centerX, bottomY);
+
+            // 提取文字像素
+            const imageData = offCtx.getImageData(0, 0, w, h);
+            const data = imageData.data;
+            const textPoints = [];
+
+            for (let y = 0; y < h; y += 1.8) {
+                for (let x = 0; x < w; x += 1.8) {
+                    const alpha = data[(Math.floor(y) * w + Math.floor(x)) * 4 + 3];
+                    if (alpha > 10) {
+                        textPoints.push({ x, y });
                     }
                 }
             }
 
-            // 生成粒子并分配目标位置
-            for (let i = 0; i < particleCount; i++) {
+            if (textPoints.length === 0) {
+                textPoints.push({ x: centerX, y: topY });
+                textPoints.push({ x: centerX, y: bottomY });
+            }
+
+            // 生成粒子
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const target = textPoints[i % textPoints.length];
                 particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 3 + 1,
-                    speedX: (Math.random() - 0.5) * 2,
-                    speedY: (Math.random() - 0.5) * 2,
-                    targetX: textPixels[i % textPixels.length].x,
-                    targetY: textPixels[i % textPixels.length].y,
-                    color: `rgba(${255}, ${105}, ${180}, ${Math.random() * 0.8 + 0.2})` // 粉色系粒子
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    size: 2.2 + Math.random() * 2.5,
+                    targetX: target.x,
+                    targetY: target.y,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.12 + Math.random() * 0.08,
+                    trailLength: 0,
+                    trailPoints: []
                 });
             }
 
-            // 启动粒子动画
+            // 开始动画
             animateParticles();
         }
 
-        // 粒子动画循环
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            breathPhase += 0.035;
+            trailPhase += 0.02;
+
+            const w = canvas.width;
+            const h = canvas.height;
 
             particles.forEach(p => {
-                // 粒子向目标位置移动（缓动效果）
-                p.x += (p.targetX - p.x) * 0.05;
-                p.y += (p.targetY - p.y) * 0.05;
+                const dx = p.targetX - p.x;
+                const dy = p.targetY - p.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-                // 绘制粉色粒子
-                ctx.fillStyle = p.color;
+                if (distance < 50 && Math.abs(p.y - p.targetY) > 5) {
+                    p.trailLength = Math.min(15, p.trailLength + 0.5);
+                    
+                    p.trailPoints.unshift({ x: p.x, y: p.y });
+                    if (p.trailPoints.length > p.trailLength) {
+                        p.trailPoints.pop();
+                    }
+                } else {
+                    p.trailLength = Math.max(0, p.trailLength - 0.3);
+                    if (p.trailLength === 0) {
+                        p.trailPoints = [];
+                    }
+                }
+
+                // 绘制拖尾
+                for (let i = 0; i < p.trailPoints.length; i++) {
+                    const point = p.trailPoints[i];
+                    const alpha = 0.7 * (1 - i / p.trailPoints.length);
+                    ctx.fillStyle = `rgba(${RGB_COLOR}, ${alpha * 0.6})`;
+                    
+                    const size = p.size * (0.6 + 0.4 * (1 - i / p.trailPoints.length));
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                p.x += dx * p.speed;
+                p.y += dy * p.speed;
+
+                const breath = 0.7 + 0.3 * Math.sin(breathPhase + p.phase);
+                ctx.fillStyle = `rgba(${RGB_COLOR}, ${breath})`;
+
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
             });
 
-            requestAnimationFrame(animateParticles);
+            animationFrameId = requestAnimationFrame(animateParticles);
         }
-    </script>
+
+        // ---------- 监听窗口大小变化，自适应粒子 ----------
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            if (particleContainer.style.display === 'block') {
+                initParticles();
+            }
+        });
+
+    })();
+</script>
 </body>
 </html>
